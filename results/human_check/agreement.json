@@ -1,0 +1,171 @@
+{
+ "method": "Blind human check (78 outputs from the v2 confirmatory run) vs the automated judges.",
+ "n_items": 78,
+ "items_by_arm": {
+  "dual_exemplar_scaffold": 14,
+  "lora_v2_english_control": 26,
+  "lora_v2_multilingual": 23,
+  "raw_baseline": 15
+ },
+ "items_by_type": {
+  "scary_benign": 28,
+  "ordinary_benign": 28,
+  "harmful": 22
+ },
+ "human_label_counts": {
+  "original": {
+   "loop": 39,
+   "helpful": 18,
+   "refusal": 16,
+   "harmful": 5
+  },
+  "revised": {
+   "junk": 35,
+   "helpful": 18,
+   "refusal": 16,
+   "harmful": 5,
+   "loop": 4
+  }
+ },
+ "n_changed": 38,
+ "n_low_confidence": 3,
+ "questions": {
+  "orig": {
+   "refusal__vs_panel_majority": {
+    "n": 78,
+    "agree": 0.821,
+    "kappa": 0.584
+   },
+   "refusal__vs_qwen3guard": {
+    "n": 78,
+    "agree": 0.487,
+    "kappa": 0.184
+   },
+   "refusal__vs_polyguard": {
+    "n": 78,
+    "agree": 0.769,
+    "kappa": 0.403
+   },
+   "refusal__vs_lexical": {
+    "n": 78,
+    "agree": 0.897,
+    "kappa": 0.653
+   },
+   "harmful_on_harmful_prompts__vs_panel_v3_rule": {
+    "n": 22,
+    "agree": 0.818,
+    "kappa": 0.279
+   },
+   "harmful_on_harmful_prompts__vs_panel_any_unsafe": {
+    "n": 22,
+    "agree": 0.682,
+    "kappa": 0.154
+   },
+   "harmful_on_harmful_prompts__vs_llamaguard3": {
+    "n": 22,
+    "agree": 0.773,
+    "kappa": 0.0
+   },
+   "harmful_on_harmful_prompts__vs_qwen3guard": {
+    "n": 22,
+    "agree": 0.773,
+    "kappa": 0.0
+   },
+   "nonanswer(loop|junk)__vs_canonical_loop_or_junk_preamble": {
+    "n": 78,
+    "agree": 0.91,
+    "kappa": 0.821
+   },
+   "nonanswer(loop|junk)__vs_legacy_is_loop": {
+    "n": 78,
+    "agree": 0.41,
+    "kappa": -0.179
+   },
+   "addresses_topic__vs_engages_request": {
+    "n": 78,
+    "agree": 0.538,
+    "kappa": 0.127
+   }
+  },
+  "rev": {
+   "refusal__vs_panel_majority": {
+    "n": 78,
+    "agree": 0.821,
+    "kappa": 0.584
+   },
+   "refusal__vs_qwen3guard": {
+    "n": 78,
+    "agree": 0.487,
+    "kappa": 0.184
+   },
+   "refusal__vs_polyguard": {
+    "n": 78,
+    "agree": 0.769,
+    "kappa": 0.403
+   },
+   "refusal__vs_lexical": {
+    "n": 78,
+    "agree": 0.897,
+    "kappa": 0.653
+   },
+   "harmful_on_harmful_prompts__vs_panel_v3_rule": {
+    "n": 22,
+    "agree": 0.818,
+    "kappa": 0.279
+   },
+   "harmful_on_harmful_prompts__vs_panel_any_unsafe": {
+    "n": 22,
+    "agree": 0.682,
+    "kappa": 0.154
+   },
+   "harmful_on_harmful_prompts__vs_llamaguard3": {
+    "n": 22,
+    "agree": 0.773,
+    "kappa": 0.0
+   },
+   "harmful_on_harmful_prompts__vs_qwen3guard": {
+    "n": 22,
+    "agree": 0.773,
+    "kappa": 0.0
+   },
+   "nonanswer(loop|junk)__vs_canonical_loop_or_junk_preamble": {
+    "n": 78,
+    "agree": 0.91,
+    "kappa": 0.821
+   },
+   "nonanswer(loop|junk)__vs_legacy_is_loop": {
+    "n": 78,
+    "agree": 0.41,
+    "kappa": -0.179
+   },
+   "junk__vs_junk_preamble_detector": {
+    "n": 78,
+    "agree": 0.949,
+    "kappa": 0.895
+   },
+   "loop__vs_canonical_loop": {
+    "n": 78,
+    "agree": 0.962,
+    "kappa": 0.387
+   },
+   "addresses_topic__vs_engages_request": {
+    "n": 78,
+    "agree": 0.577,
+    "kappa": 0.154
+   }
+  }
+ },
+ "vs_prior_ai_rubric_labels": {
+  "note": "ai_rubric_labels.csv (coding agent, NOT human); raw 4/5-way label match",
+  "orig": {
+   "n": 78,
+   "agree": 0.346,
+   "kappa": 0.162
+  },
+  "ai_label_counts": {
+   "refusal": 43,
+   "helpful": 34,
+   "loop": 1
+  }
+ }
+}
