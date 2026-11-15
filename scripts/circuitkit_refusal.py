@@ -27,7 +27,7 @@ from collections import defaultdict
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from lora_v3_common import MODEL_ID, MODEL_REV, ROOT, free, log  # noqa: E402  (applies the torchvision patch)
+from common import MODEL_ID, MODEL_REV, ROOT, free, log  # noqa: E402  (applies the torchvision patch)
 
 OUT = ROOT / "results/probe_steering"
 N_PAIRS = 20

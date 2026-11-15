@@ -1,6 +1,6 @@
-# LoRA v4: two independent training runs
+# SafeSwitch LoRA: two independent training runs
 
-We trained LoRA v4 twice with the same pipeline (`scripts/v4_build_data.py`, `v4_train.py`, `v4_validate.py`), the same hyperparameters (r = 16, all linear layers, 200 steps, checkpoints every 50 steps) and the same seed. Both runs were scored on the same validation set with the same three-judge panel and decoding.
+I trained the adapter twice with the same pipeline (`scripts/v4_build_data.py`, `v4_train.py`, `v4_validate.py`), the same hyperparameters (r = 16, all linear layers, 200 steps, checkpoints every 50 steps) and the same seed. Both runs were scored on the same validation set with the same three-judge panel and decoding.
 
 **Training data in the two runs:**
 - **Run 1:** train sha `98f4a71b…`.
@@ -27,4 +27,4 @@ All differences between runs are inside the CIs. The training-loss curves are id
 
 - **Checkpoint choice:** under the pre-committed validation rule, run 1 selects step 150 and run 2 selects step 100; the two are within noise of each other. We release run 2's step 150, the same step as the evaluated run-1 model.
 - **What we claim:** test-set numbers in the README belong to run 1. For the released run-2 weights, we claim only the validation numbers above.
-- **Files:** `validation_selection.json` (run 2), `train_log.json` (run 2), `checkpoint-150/` (weights, not committed), `checkpoint-100-meta/` (configs only). Run 1's validation: `results/lora_v4/validation_selection.json`.
+- **Files:** `validation_selection.json` and `train_log.json` (run 2), `checkpoint-150/` (adapter config and trainer state; the weights are on Hugging Face as `kanishkez/safeswitch-lora`). Run 1's validation: `results/lora_v4/validation_selection.json`.

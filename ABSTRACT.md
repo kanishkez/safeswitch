@@ -1,0 +1,15 @@
+# SwitchSafe-HI: Auditing and Fixing Code Mixed Hindi Safety in Tiny Aya Fire
+
+Hundreds of millions of Hindi speakers type in Latin script: Romanized Hindi or Hinglish (Hindi mixed with English). If a safety tuned model refuses a harmful request in English but complies when the same request is asked in Hinglish, the script becomes a free bypass. SwitchSafe-HI is an evaluation and hardening pipeline for CohereLabs/tiny-aya-fire (3.35B) across four forms: English, Devanagari Hindi, Romanized Hindi and Hinglish.
+
+I built a fresh pre registered test set of 128 scenarios in all four forms, committed by hash before generation and with zero overlap with any training data. Each prompt was evaluated once with 1 greedy and 3 sampled replies, scored by a three judge panel (Qwen3Guard, Llama Guard 3, PolyGuard plus a refined lexical matcher), with scenario bootstrap 95% CIs (10,000 resamples).
+
+The base model refuses 76% of harmful English requests but only 21% of Romanized Hindi and Hinglish ones. SafeSwitch LoRA closes most of that gap. It uses r = 16 on all linear layers, trained on about 600 pairs filtered through CuratorKIT and a judge panel, with 68% of the data in Latin script. The checkpoint was selected on validation only. On the fresh test set, harmful refusal goes from 43.9% to 79.6% (+35.7 pts [29.7, 41.6]). Romanized Hindi and Hinglish go from 21.4% to 76.2%. Attack success drops from 23.8% to 8.6%. Helpfulness stays high (96.9%) and MMLU is flat (English 56.0%, Hindi 47.7%). Two training runs with the same recipe agree within the CIs on validation at every checkpoint.
+
+I used a probe, activation patching and CircuitKIT attribution to trace where refusal happens inside the model. An English trained logistic probe recognises harm in Latin script Hindi almost perfectly (AUC 0.99), so the model sees the harm but does not act on it. Activation patching narrows this down: Latin script prompts never build the "refuse" state that English assembles in layers 14 to 22. Patching English activations into Romanized prompts closes 92% of the refusal gap by layer 22. Attention head A14.13 is a top refusal component in English, Romanized Hindi and Hinglish. This explains why SafeSwitch LoRA, which trains the refusal conversion directly in Latin script, works where inference time steering from an English calibrated gate did not.
+
+Probe gated steering using SafeTune raised Latin script refusal by only 5 points on the test set while also increasing judged harm and loops.
+
+The pipeline uses four hackathon kits: CuratorKIT for data filtering, SafeTune for steering, CircuitKIT for circuit attribution, and AuditKIT for audit reports of earlier steering runs. All pre registrations, deviation logs, code and adapters are released publicly, along with scenario IDs and judge labels. Raw harmful text is withheld.
+
+Limitations: all Latin script test items are machine translated via Sarvam M and not human verified, only 78 outputs (from an earlier run) were human labelled to check judge agreement, there are 52 harmful scenarios per form, and the unmerged adapter halves serving throughput.

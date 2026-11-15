@@ -11,7 +11,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from lora_v3_common import (FORMS, ROOT, chat_prompt, free, generate, judge_all, load_generator,  # noqa: E402
+from common import (FORMS, ROOT, chat_prompt, free, generate, judge_all, load_generator,  # noqa: E402
                             log, panel, read_jsonl, scen_boot, template_prefix_match, write_jsonl)
 
 GATE_HELP, GATE_SCARY_FR = 0.85, 0.20

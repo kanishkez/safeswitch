@@ -1,23 +1,9 @@
-.venv/
 __pycache__/
 *.py[cod]
-.pytest_cache/
-*.egg-info/
+.venv/
 .DS_Store
-deploy/
-ANTIGRAVITY_PROMPT.md
-results/**/*.jsonl
-results/**/*.csv
-results/**/*.png
-results/auditkit-cache/
-
-# Allow tracking audit and confirmatory prediction artifacts
-!results/gap_audit/**
-!results/validation_bakeoff/**
-!results/confirmatory_test/**
-!results/final_confirmatory_test/**
-!results/sampling_dev/**
-!results/sampling_attack_test/**
-!results/sampling_overrefusal_dev/**
-!results/sampling_reserved_confirmatory/**
-!results/lora_v2_confirmatory/**
+# model outputs and any file with prompt or response text stay local
+*.jsonl
+!results/refusal_localisation/gen_rows_ids.jsonl
+results/**/adapter/
+*.safetensors

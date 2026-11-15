@@ -29,7 +29,7 @@ import pandas as pd
 import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from lora_v3_common import FORMS, FORM_CODE, ROOT, free, in_form_language, lexical_refusal, log, norm, read_jsonl, write_jsonl  # noqa: E402
+from common import FORMS, FORM_CODE, ROOT, free, in_form_language, lexical_refusal, log, norm, read_jsonl, write_jsonl  # noqa: E402
 
 TRANSLATOR = os.environ.get("V4_TRANSLATOR", "sarvamai/sarvam-m")
 SEED = 20261115

@@ -33,7 +33,7 @@ import numpy as np
 import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from lora_v3_common import (FORMS, ROOT, chat_prompt, free, generate, judge_all, load_generator, log, panel,  # noqa: E402
+from common import (FORMS, ROOT, chat_prompt, free, generate, judge_all, load_generator, log, panel,  # noqa: E402
                             read_jsonl, scen_boot, write_jsonl)
 
 OUT = ROOT / "results/probe_steering"
@@ -292,7 +292,7 @@ def positive_control():
     base_cfg = torch.load(OUT / "config.pt")
     pool = read_jsonl(ROOT / "data/v4_fresh/train_pool.jsonl")
     hold = vb.holdout_ids(pool)
-    from lora_v3_common import lexical_refusal
+    from common import lexical_refusal
     cand = sorted([r for r in pool if r["sub_type"] == "harmful" and r["language"] == "English" and r["scenario_id"] not in hold],
                   key=lambda r: r["scenario_id"])[:60]
     for r in cand:

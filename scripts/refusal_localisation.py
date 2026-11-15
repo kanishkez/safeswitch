@@ -31,7 +31,7 @@ import numpy as np
 import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from lora_v3_common import ROOT, chat_prompt, free, judge_all, lexical_refusal, load_generator, log, panel, read_jsonl  # noqa: E402
+from common import ROOT, chat_prompt, free, judge_all, lexical_refusal, load_generator, log, panel, read_jsonl  # noqa: E402
 from steering_gate import decoder_layers  # noqa: E402
 
 OUT = ROOT / "results/refusal_localisation"

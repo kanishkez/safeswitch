@@ -20,7 +20,7 @@ import pandas as pd
 import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from lora_v3_common import ROOT, chat_prompt, free, load_generator, log, read_jsonl  # noqa: E402
+from common import ROOT, chat_prompt, free, load_generator, log, read_jsonl  # noqa: E402
 
 HUB = Path(os.path.expanduser("~/.cache/huggingface/hub"))
 OUT = ROOT / "results/v4_fresh"

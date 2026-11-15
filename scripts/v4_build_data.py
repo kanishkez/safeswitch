@@ -21,7 +21,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from lora_v3_common import (OLD_TEMPLATES, ROOT, build_prompt_dual_exemplar, chat_prompt, check_loop, cut_hallucinated_turns,  # noqa: E402
+from common import (OLD_TEMPLATES, ROOT, build_prompt_dual_exemplar, chat_prompt, check_loop, cut_hallucinated_turns,  # noqa: E402
                             free, generate, in_form_language, judge_qwen, lexical_refusal, load_generator, log, memorized_preamble,
                             norm, read_jsonl, template_prefix_match, write_jsonl)
 

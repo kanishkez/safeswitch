@@ -104,7 +104,7 @@ class CountingCAST:
         if not gated:
             self.cast.install()
 
-    # generation API used by lora_v3_common.generate (model.generate(**enc, ...)) and attribute passthrough
+    # generation API used by common.generate (model.generate(**enc, ...)) and attribute passthrough
     def generate(self, *a, **k):
         return self.cast.generate(*a, **k) if self.gated else self.model.generate(*a, **k)
 

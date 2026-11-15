@@ -1,0 +1,15 @@
+# Python 3.12+, one CUDA GPU with at least 24 GB
+torch==2.15.0
+transformers==5.23.0
+peft==0.21.3
+trl==1.18.0
+accelerate==1.15.0
+datasets==5.2.0
+sentence-transformers
+scikit-learn
+numpy
+pandas
+# hackathon kits
+safetune==0.1.12
+circuitkit==0.2.4
+curatorkit==0.1.22

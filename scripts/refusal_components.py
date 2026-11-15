@@ -26,7 +26,7 @@ import numpy as np
 import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from lora_v3_common import MODEL_ID, MODEL_REV, ROOT, free, load_generator, log, read_jsonl  # noqa: E402
+from common import MODEL_ID, MODEL_REV, ROOT, free, load_generator, log, read_jsonl  # noqa: E402
 import refusal_localisation as RL  # noqa: E402
 
 OUT = ROOT / "results/refusal_localisation"
