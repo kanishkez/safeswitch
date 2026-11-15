@@ -1,0 +1,20 @@
+{
+ "prior": {
+  "exact": 0,
+  "normalized": 0,
+  "embedding": 0,
+  "max_cos": 0.838
+ },
+ "pool": {
+  "exact": 0,
+  "normalized": 0,
+  "embedding": 0,
+  "pool_scenarios_dropped": 3
+ },
+ "native_stage": {
+  "harmful:exact": 38,
+  "harmful:embedding": 7,
+  "scary_benign:exact": 18,
+  "scary_benign:embedding": 4
+ }
+}

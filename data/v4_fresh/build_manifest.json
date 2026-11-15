@@ -1,0 +1,122 @@
+{
+ "seed": 20261115,
+ "translator": "sarvamai/sarvam-m",
+ "cos_threshold": 0.9,
+ "prior_texts": 1441,
+ "prior_files": 50,
+ "prior_texts_by_source": {
+  "benchmark_v5": 320,
+  "benchmark_v4": 680,
+  "benchmark_v3": 320,
+  "expanded_300": 2400,
+  "benchmark_v6": 2400,
+  "distilled": 170,
+  "benchmark_v7": 200,
+  "aya_xstest": 960,
+  "raw": 120,
+  "curated": 120,
+  "stress": 24,
+  "splits": 1400,
+  "lora_v3": 769,
+  "confirmatory_test_split": 300
+ },
+ "stages": {
+  "native_overlap_dropped": {
+   "harmful:exact": 38,
+   "harmful:embedding": 7,
+   "scary_benign:exact": 18,
+   "scary_benign:embedding": 4
+  },
+  "harmful_internal_near_dup_dropped": 92,
+  "ordinary_benign_internal_near_dup_dropped": 231,
+  "scary_benign_internal_near_dup_dropped": 2,
+  "after_screen": {
+   "harmful": 675,
+   "ordinary_benign": 612,
+   "scary_benign": 226
+  },
+  "quality_and_post_overlap_rejections": {
+   "harmful:wrong_language": 55,
+   "harmful:rom_equals_hing": 29,
+   "harmful:translator_refusal": 2,
+   "ordinary_benign:wrong_language": 73,
+   "ordinary_benign:rom_equals_hing": 18,
+   "ordinary_benign:length": 3,
+   "scary_benign:wrong_language": 37,
+   "scary_benign:rom_equals_hing": 32,
+   "scary_benign:translator_refusal": 1
+  }
+ },
+ "test_scenarios": {
+  "harmful": 52,
+  "ordinary_benign": 38,
+  "scary_benign": 38
+ },
+ "pool_scenarios": {
+  "ordinary_benign": 104,
+  "harmful": 97,
+  "scary_benign": 66
+ },
+ "test_categories": {
+  "harmful": {
+   "Violence, Threats & Incitement": 7,
+   "Discrimination & Injustice": 7,
+   "Bullying & Harassment": 6,
+   "Self-Harm": 5,
+   "Non-consensual sexual content": 5,
+   "Profanity": 5,
+   "Harms of Representation Allocation and Quality of Service": 5,
+   "Hate Speech": 5,
+   "Graphic material": 7
+  },
+  "ordinary_benign": {
+   "original-annotations": 18,
+   "re-annotations": 20
+  },
+  "scary_benign": {
+   "nons_group_real_discr": 6,
+   "privacy_fictional": 4,
+   "privacy_public": 3,
+   "real_group_nons_discr": 5,
+   "safe_contexts": 4,
+   "safe_targets": 5,
+   "homonyms": 4,
+   "figurative_language": 3,
+   "historical_events": 2,
+   "definitions": 2
+  }
+ },
+ "status": "OK",
+ "test_sha256": "b78080bf5f8f536e8593ffdce4558ef74a539477f7984976f15ea78c0e1f084e",
+ "n_test_prompts": 512,
+ "n_pool_prompts": 1068,
+ "test_provenance_by_form": {
+  "English": {
+   "LLM": 38,
+   "human": 90
+  },
+  "Hindi": {
+   "human": 90,
+   "LLM": 38
+  },
+  "Romanized Hindi": {
+   "LLM": 128
+  },
+  "Hinglish": {
+   "LLM": 128
+  }
+ },
+ "pool_dropped_near_test": 3,
+ "test_vs_pool_overlap": {
+  "exact": 0,
+  "normalized": 0,
+  "embedding": 0,
+  "pool_scenarios_dropped": 3
+ },
+ "test_vs_prior_overlap": {
+  "exact": 0,
+  "normalized": 0,
+  "embedding": 0,
+  "max_cos": 0.838
+ }
+}
