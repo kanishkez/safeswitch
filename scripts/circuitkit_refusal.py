@@ -74,6 +74,66 @@ def load_tl(ck, res):
         return ck.load_model(MODEL_ID, dtype="bfloat16", device="cuda")
 
 
+def scores_from_sidecar(language):
+    """Real per-node EAP-IG scores from CircuitKIT's `<output>_scores.pt` side-car (Circuit.top_nodes() returned 1.0 for every
+    node in 0.2.4, so it carries rank only)."""
+    import torch
+    stem = "en" if language == "en" else language.replace(" ", "_")
+    p = OUT / f"circuitkit_{stem}_scores.pt"
+    d = torch.load(p, map_location="cpu", weights_only=False)
+    ns = {str(k): float(v) for k, v in d["node_scores"].items()}
+    imp = defaultdict(float)
+    for name, v in ns.items():
+        L = layer_of(name)
+        if L is not None:
+            imp[L] += abs(v)
+    top = sorted(ns.items(), key=lambda kv: abs(kv[1]), reverse=True)
+    return dict(score_file=p.name, n_nodes=len(ns), top_nodes=[(k, round(v, 6)) for k, v in top[:30]], layer_importance=dict(sorted(imp.items())))
+
+
+def rescore():
+    """Recompute layer importance, layer choice and overlap from the score side-cars; overwrite circuitkit.json."""
+    res = json.load(open(OUT / "circuitkit.json"))
+    n = res["model_cfg"]["n_layers"]
+    for run, lang in [("English", "en"), ("Romanized Hindi", "Romanized Hindi"), ("Hinglish", "Hinglish")]:
+        try:
+            r = scores_from_sidecar(lang)
+            res["runs"].setdefault(run, {})
+            res["runs"][run]["top_nodes_api_note"] = "Circuit.top_nodes() returned score 1.0 for every node; scores below are from the side-car"
+            res["runs"][run].update(r)
+        except FileNotFoundError:
+            pass
+    imp = {int(k): v for k, v in res["runs"]["English"]["layer_importance"].items()}
+    types = ["global" if (L + 1) % 4 == 0 else "sliding_window" for L in range(n)]  # matches TL cfg.attn_types for Tiny Aya
+    mid = [L for L in range(n // 3, 2 * n // 3) if L in imp]
+    gate = max(mid, key=imp.get)
+    late = [L for L in imp if gate < L <= n - 2]
+    steer = max(late, key=imp.get)
+    rank = sorted(imp, key=imp.get, reverse=True)
+    gl = [L for L in range(n) if types[L] == "global"]
+    res["layer_choice"] = dict(gate_layer=gate, gate_attention=types[gate], steer_layer=steer, steer_attention=types[steer], global_layers=gl,
+                               importance_rank_of_global_layers={L: rank.index(L) + 1 for L in gl if L in imp},
+                               mean_importance=dict(global_=sum(imp[L] for L in gl if L in imp) / len(gl),
+                                                    sliding=sum(v for L, v in imp.items() if L not in gl) / (len(imp) - len(gl))),
+                               top10_layers=rank[:10], source="EAP-IG node_scores side-car (|score| summed per layer)",
+                               rule="gate = most important middle-third layer; steer = most important layer in (gate, n-2]")
+    def top_layers(r, k=5):
+        li = {int(a): b for a, b in r["layer_importance"].items()}
+        return sorted(li, key=li.get, reverse=True)[:k]
+    def top_n(r, k=20):
+        return {x for x, _ in r["top_nodes"][:k]}
+    E = res["runs"]["English"]
+    res["overlap"] = {f: dict(top5_layers_en=top_layers(E), top5_layers=top_layers(res["runs"][f]),
+                              top5_layer_overlap=len(set(top_layers(E)) & set(top_layers(res["runs"][f]))),
+                              top20_node_jaccard=round(len(top_n(E) & top_n(res["runs"][f])) / max(1, len(top_n(E) | top_n(res["runs"][f]))), 3))
+                      for f in ["Romanized Hindi", "Hinglish"] if "layer_importance" in res["runs"].get(f, {}) and "score_file" in res["runs"][f]}
+    if res.get("status") in (None, "OK", "ENGLISH_OK_LATIN_FAILED"):
+        res["status"] = "OK" if len(res["overlap"]) == 2 else "ENGLISH_OK_LATIN_FAILED"
+    res["fixes"] = ["layer ranking recomputed from node_scores side-car after top_nodes() returned uniform 1.0 (first pass gave a tie artifact: 12/13)"]
+    json.dump(res, open(OUT / "circuitkit.json", "w"), indent=1, default=str)
+    log(f"CIRCUITKIT RESCORED {res['status']} {res['layer_choice']} overlap={res['overlap']}")
+
+
 def translate_pairs(en_pairs):
     import v4_build_fresh_test as b
     llm = b.LLM(b.TRANSLATOR)
@@ -166,4 +226,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    rescore() if "--rescore" in sys.argv else main()

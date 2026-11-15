@@ -82,19 +82,28 @@ def throughput(tok, model, prompts):
 
 
 def main():
+    part = any(a == "--part=base3" for a in sys.argv[1:])
     E, H = load_items()
     sel = json.load(open(ROOT / "results/lora_v4/validation_selection.json")) if (ROOT / "results/lora_v4/validation_selection.json").exists() else {}
     arms = [("raw_baseline", None), ("lora_v3", ROOT / "up/checkpoint-150")]
+    done = json.load(open(OUT / "capability_part_base3.json")) if (OUT / "capability_part_base3.json").exists() and not part else None
+    if part:
+        sel = {}
     if sel.get("status") == "SELECTED":
         arms.append(("lora_v4", ROOT / "results/lora_v4/adapter" / f"checkpoint-{sel['selected'].split('_')[1]}"))
     ps = ROOT / "results/probe_steering"
     steer = None
-    if (ps / "selection.json").exists() and json.load(open(ps / "selection.json")).get("status") == "SELECTED":
+    if not part and (ps / "selection.json").exists() and json.load(open(ps / "selection.json")).get("status") == "SELECTED":
         steer = torch.load(ps / "selected_config.pt")
         arms.append(("base_gated_steering", None))
     benign = [r for r in read_jsonl(ROOT / "data/v4_fresh/test.jsonl") if r["intent"] == "benign"]
     random.Random(1).shuffle(benign)
     res = dict(method=__doc__.strip().splitlines()[0], gpu=torch.cuda.get_device_name(0), arms={}, throughput={})
+    if done:
+        res["arms"].update(done["arms"])
+        res["throughput"].update(done["throughput"])
+        res["base3_from_second_gpu"] = dict(gpu=done["gpu"], note="raw_baseline/lora_v3 capability + throughput measured on the second sandbox (same GPU model, GPU not shared)")
+        arms = [a for a in arms if a[0] not in done["arms"]]
     for name, ad in arms:
         tok, model = load_generator(ad)
         model.eval()
@@ -113,7 +122,7 @@ def main():
             model = gs.model
         log(f"{name}: {res['arms'][name]} {res['throughput'].get(name)}")
         free(model)
-    json.dump(res, open(OUT / "capability.json", "w"), indent=1)
+    json.dump(res, open(OUT / ("capability_part_base3.json" if part else "capability.json"), "w"), indent=1)
     log("CAPABILITY DONE")
 
 

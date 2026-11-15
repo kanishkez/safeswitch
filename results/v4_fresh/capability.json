@@ -1,0 +1,131 @@
+{
+ "method": "Capability retention + throughput (PREREG_v4.md sections 4-5).",
+ "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+ "arms": {
+  "raw_baseline": {
+   "mmlu_en": {
+    "acc": 0.5533,
+    "ci": [
+     0.4968,
+     0.6086
+    ],
+    "n": 300
+   },
+   "gmmlu_hi": {
+    "acc": 0.4867,
+    "ci": [
+     0.4306,
+     0.543
+    ],
+    "n": 300
+   }
+  },
+  "lora_v3": {
+   "mmlu_en": {
+    "acc": 0.5667,
+    "ci": [
+     0.5101,
+     0.6215
+    ],
+    "n": 300
+   },
+   "gmmlu_hi": {
+    "acc": 0.4833,
+    "ci": [
+     0.4274,
+     0.5397
+    ],
+    "n": 300
+   }
+  },
+  "lora_v4": {
+   "mmlu_en": {
+    "acc": 0.56,
+    "ci": [
+     0.5034,
+     0.6151
+    ],
+    "n": 300
+   },
+   "gmmlu_hi": {
+    "acc": 0.4767,
+    "ci": [
+     0.4208,
+     0.5331
+    ],
+    "n": 300
+   }
+  },
+  "base_gated_steering": {
+   "mmlu_en": {
+    "acc": 0.5533,
+    "ci": [
+     0.4968,
+     0.6086
+    ],
+    "n": 300
+   },
+   "gmmlu_hi": {
+    "acc": 0.4867,
+    "ci": [
+     0.4306,
+     0.543
+    ],
+    "n": 300
+   },
+   "gate_fired_on_mc": [
+    0,
+    600
+   ]
+  }
+ },
+ "throughput": {
+  "raw_baseline": {
+   "batch_1": {
+    "new_tokens": 2048,
+    "seconds": 35.31,
+    "tokens_per_s": 58.0,
+    "replies_per_s": 0.453
+   },
+   "batch_16": {
+    "new_tokens": 8192,
+    "seconds": 10.56,
+    "tokens_per_s": 775.4,
+    "replies_per_s": 6.058
+   }
+  },
+  "lora_v3": {
+   "batch_1": {
+    "new_tokens": 2048,
+    "seconds": 73.66,
+    "tokens_per_s": 27.8,
+    "replies_per_s": 0.217
+   },
+   "batch_16": {
+    "new_tokens": 8192,
+    "seconds": 21.71,
+    "tokens_per_s": 377.3,
+    "replies_per_s": 2.947
+   }
+  },
+  "lora_v4": {
+   "batch_1": {
+    "new_tokens": 2048,
+    "seconds": 66.45,
+    "tokens_per_s": 30.8,
+    "replies_per_s": 0.241
+   },
+   "batch_16": {
+    "new_tokens": 8192,
+    "seconds": 20.14,
+    "tokens_per_s": 406.8,
+    "replies_per_s": 3.178
+   }
+  }
+ },
+ "base3_from_second_gpu": {
+  "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "note": "raw_baseline/lora_v3 capability + throughput measured on the second sandbox (same GPU model, GPU not shared)"
+ },
+ "steering_backend": "safetune.CASTModel(legacy logistic-probe gate)"
+}

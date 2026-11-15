@@ -20,7 +20,11 @@ from lora_v3_common import (FORMS, ROOT, chat_prompt, free, generate, judge_all,
 
 OUT = ROOT / "results/v4_fresh"
 TEST = ROOT / "data/v4_fresh/test.jsonl"
-V3_ADAPTER = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / "up/checkpoint-150"
+_POS = [a for a in sys.argv[1:] if not a.startswith("--")]
+V3_ADAPTER = Path(_POS[0]) if _POS else ROOT / "up/checkpoint-150"
+PART = next((a.split("=", 1)[1] for a in sys.argv[1:] if a.startswith("--part=")), None)
+BASE3 = ["raw_baseline", "dual_exemplar_scaffold_chat", "lora_v3"]
+PART_ROWS = OUT / "eval_rows_part_base3.jsonl"  # logistics only (second GPU): same set, same arms, same decoding; no selection uses them
 DRAWS = [("greedy", 0, False)] + [(f"sampled_{i}", i, True) for i in range(1, 4)]
 LATIN = ("Romanized Hindi", "Hinglish")
 
@@ -111,7 +115,29 @@ def diffs(rows, a, b):
     return out
 
 
+def run_part():
+    """--part=base3: generate + judge the three arms that depend on neither v4 nor steering (second GPU)."""
+    OUT.mkdir(parents=True, exist_ok=True)
+    marker = OUT / "EVAL_PART_base3_STARTED"
+    assert not marker.exists(), "part already run once"
+    h = hashlib.sha256(open(TEST, "rb").read()).hexdigest()
+    assert h == (ROOT / "data/v4_fresh/test_sha256.txt").read_text().split()[0], "test set differs from the committed hash"
+    marker.write_text("base3\n")
+    items = read_jsonl(TEST)
+    chat = lambda tok, it: chat_prompt(tok, it)  # noqa: E731
+    scaf = lambda tok, it: tok.apply_chat_template(scaffold_chat_messages(it), tokenize=False, add_generation_prompt=True)  # noqa: E731
+    rows = []
+    for name, ad, fn in [("raw_baseline", None, chat), ("dual_exemplar_scaffold_chat", None, scaf), ("lora_v3", V3_ADAPTER, chat)]:
+        rows += gen(name, ad, items, fn)
+    judge_all(rows)
+    write_jsonl(PART_ROWS, rows)
+    (OUT / "EVAL_PART_base3_DONE").write_text(h + "\n")
+    log("EVAL PART base3 DONE")
+
+
 def main():
+    if PART == "base3":
+        return run_part()
     OUT.mkdir(parents=True, exist_ok=True)
     marker = OUT / "EVAL_STARTED"
     assert not marker.exists(), "fresh-set evaluation already run once; refusing to re-run"
@@ -137,10 +163,17 @@ def main():
         arms.append(("base_gated_steering", None, chat, steer))
         if v4_ok:
             arms.append(("lora_v4_gated_steering", v4_adapter, chat, steer))
-    rows = []
+    rows, pre = [], []
+    if PART_ROWS.exists():
+        pre = [r for r in read_jsonl(PART_ROWS) if r["arm"] in BASE3]
+        assert {r["arm"] for r in pre} == set(BASE3) and len(pre) == 3 * 4 * len(items), "incomplete base3 part file"
+        log(f"reusing {len(pre)} judged rows for {BASE3} from the second-GPU part run")
     for name, ad, fn, st in arms:
+        if pre and name in BASE3:
+            continue
         rows += gen(name, ad, items, fn, st)
     judge_all(rows)
+    rows = pre + rows
     finish(rows, targets)
     write_jsonl(OUT / "eval_rows.jsonl", rows)
     names = [a[0] for a in arms]
@@ -149,6 +182,7 @@ def main():
                            scenarios_by_subtype={st: len({i["scenario_id"] for i in items if i["sub_type"] == st}) for st in ["harmful", "ordinary_benign", "scary_benign"]},
                            draws="1 greedy + 3 sampled (T=0.7, top_p=0.9), rep 1.05, max_new_tokens 256, chat template",
                            v4_selection=dict(status=sel["status"], selected=sel.get("selected")), v3_adapter=str(V3_ADAPTER),
+                           base3_from_second_gpu=bool(pre),
                            gated_steering=None if not steer else {k: steer[k] for k in ["gate_layer", "steer_layers", "alpha", "threshold"]}),
              arms=summarize(rows, names))
     S["diffs"] = {f"{b}_vs_{a}": diffs(rows, a, b) for a, b in [("raw_baseline", n) for n in names[1:]] + ([("lora_v3", "lora_v4"), ("lora_v4", "lora_v4_scaffold")] if v4_ok else []) + ([("lora_v4", "lora_v4_gated_steering")] if v4_ok and steer else [])}

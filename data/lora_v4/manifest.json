@@ -1,0 +1,154 @@
+{
+ "status": "OK",
+ "reason": null,
+ "seed": 20261115,
+ "sources": {
+  "v3_pairs": 373,
+  "pool": "data/v4_fresh/train_pool.jsonl",
+  "pool_sha256": "c12862c610f1066a48d867134523a1d8d5ca7fb833bd60b2b5487f6aef4fabe6"
+ },
+ "candidates": {
+  "benign": 616,
+  "harmful": 1360
+ },
+ "our_filter_rejections": {
+  "benign:lt_30_words": 80,
+  "benign:loop": 68,
+  "benign:wrong_language": 99,
+  "benign:not_finished": 191,
+  "benign:refusal_or_qwen_parse_fail": 11,
+  "benign:system_prompt_or_linguistics": 1,
+  "benign:qwen_unsafe_or_parse_fail": 1,
+  "harmful:not_refusal_by_qwen_and_lexical": 806,
+  "harmful:wrong_language": 20,
+  "harmful:qwen_not_safe": 4,
+  "harmful:loop": 5
+ },
+ "our_filter_kept": {
+  "benign": 165,
+  "harmful": 525
+ },
+ "curatorkit": {
+  "benign": {
+   "input": 165,
+   "passed": 163,
+   "stage_counts": {
+    "JSONLReader": {
+     "output_count": 165,
+     "rejected_count": 0
+    },
+    "SchemaGate": {
+     "input_count": 165,
+     "output_count": 165,
+     "probe_recovered": 0,
+     "rejected_count": 0
+    },
+    "ExactDeduplicator": {
+     "input_count": 165,
+     "output_count": 165
+    },
+    "MinHashDeduplicator": {
+     "input_count": 165,
+     "output_count": 164
+    },
+    "TextCleaner": {
+     "input_count": 164,
+     "output_count": 164
+    },
+    "EmbeddingDeduplicator": {
+     "input_count": 164,
+     "output_count": 163
+    }
+   },
+   "rejected_by_reason": {}
+  },
+  "harmful": {
+   "input": 525,
+   "passed": 432,
+   "stage_counts": {
+    "JSONLReader": {
+     "output_count": 525,
+     "rejected_count": 0
+    },
+    "SchemaGate": {
+     "input_count": 525,
+     "output_count": 525,
+     "probe_recovered": 0,
+     "rejected_count": 0
+    },
+    "ExactDeduplicator": {
+     "input_count": 525,
+     "output_count": 525
+    },
+    "MinHashDeduplicator": {
+     "input_count": 525,
+     "output_count": 522
+    },
+    "TextCleaner": {
+     "input_count": 522,
+     "output_count": 522
+    },
+    "EmbeddingDeduplicator": {
+     "input_count": 522,
+     "output_count": 432
+    }
+   },
+   "rejected_by_reason": {}
+  }
+ },
+ "after_curatorkit": {
+  "harmful": 432,
+  "benign": 163
+ },
+ "new_per_form": {
+  "Romanized Hindi": {
+   "harmful": 51,
+   "benign": 62,
+   "pool_harmful": 69,
+   "pool_benign": 62
+  },
+  "Hinglish": {
+   "harmful": 60,
+   "benign": 72,
+   "pool_harmful": 136,
+   "pool_benign": 72
+  }
+ },
+ "train": {
+  "total": 618,
+  "refusal": 265,
+  "helpful": 353,
+  "ratio": 1.332,
+  "latin_share": 0.676,
+  "by_form": {
+   "English": 100,
+   "Hindi": 100,
+   "Romanized Hindi": 195,
+   "Hinglish": 223
+  },
+  "by_form_type": {
+   "English|refusal": 40,
+   "English|helpful": 60,
+   "Hindi|refusal": 40,
+   "Hindi|helpful": 60,
+   "Romanized Hindi|refusal": 85,
+   "Romanized Hindi|helpful": 110,
+   "Hinglish|refusal": 100,
+   "Hinglish|helpful": 123
+  },
+  "distinct_refusals": 265
+ },
+ "validation": {
+  "prompts": 296,
+  "by_subtype": {
+   "harmful": 88,
+   "ordinary_benign": 112,
+   "scary_benign": 96
+  },
+  "pool_holdout_scenarios": 28
+ },
+ "sha256": {
+  "train.jsonl": "98f4a71bcf8b7ac6cdbe6cb406ef980f59630cb5e84d297a966d3fa028f11b3e",
+  "validation.jsonl": "2820820fadd4a3b000e44f8db2fab97040b0f2c4ceb52061ad5fb4d6cfac3099"
+ }
+}
